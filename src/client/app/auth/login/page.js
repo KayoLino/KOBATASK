@@ -31,9 +31,7 @@ function Login() {
       setErrors('');
       setEmail('');
       setPassword('');
-      setTimeout(() => {
-        router.push('/home');
-      }, 1000);
+      router.push('/home');
 
     } catch (error) {
       const errorMessage = error.response?.data?.errors?.[0] || 'Algo deu errado. Tente novamente mais tarde.';

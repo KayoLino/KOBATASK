@@ -5,7 +5,11 @@ const { getUserProfile, updateUserProfile } = require("../controllers/userContro
 const authGuard = require('../middlewares/authGuard');
 const multerMiddleware = require("../middlewares/multerMiddleware");
 
+const { updateValidation } = require("../middlewares/updateValidation");
+const validate = require("../middlewares/handleValidation");
+
+
 router.get("/profile", authGuard, getUserProfile);
-router.put("/updateProfile", authGuard, multerMiddleware, updateUserProfile);
+router.put("/update", authGuard, multerMiddleware, updateValidation(), validate, updateUserProfile);
 
 module.exports = router;

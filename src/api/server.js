@@ -20,8 +20,8 @@ const createServer = async () => {
         credentials: true,
     }));
 
-    app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
-
+    app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+    console.log("Servindo arquivos estáticos de:", path.resolve("uploads"));
     app.use(cookieParse());
 
     app.use(router);

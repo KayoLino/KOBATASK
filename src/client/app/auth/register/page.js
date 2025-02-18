@@ -11,6 +11,7 @@ function RegisterPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
   const [errors, setErrors] = useState('');
 
   const router = useRouter();
@@ -19,13 +20,15 @@ function RegisterPage() {
     e.preventDefault();
 
     try {
+
+      setIsLoading(true);
+
       if (!name || !email || !password || !confirmPassword) {
         setErrors("Preencha todos os campos!");
         return;
       }
 
       const res = await axios.post(api + "auth/register", { email, name, password, confirmPassword });
-      console.log(res.data);
 
       setName('');
       setEmail('');
@@ -38,6 +41,8 @@ function RegisterPage() {
       const errorMessage = error.response?.data?.errors?.[0] || 'Algo deu errado. Tente novamente mais tarde.';
       setErrors(errorMessage);
       console.log(error.response?.data?.errors?.[0])
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -105,6 +110,7 @@ function RegisterPage() {
             <button
               type="submit"
               className="w-full bg-blue-500 text-white p-3 rounded-2xl hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              disabled={isLoading}
             >
               Cadastrar-se
             </button>

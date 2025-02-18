@@ -151,9 +151,7 @@ const authCheck = async (req, res) => {
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-        const user = await User.findByPk(decoded.id, {
-            attributes: ["id", "nome", "imagem_perfil"],
-        });
+        const user = await User.scope("safe").findByPk(decoded.id);
 
         if (!user) {
             return res.status(401).json({ errors: ["Usuário não encontrado."] });
@@ -171,7 +169,7 @@ const authCheck = async (req, res) => {
     } catch (error) {
         return res.status(401).json({ errors: ["Token inválido ou expirado."] });
     }
-}
+};
 
 module.exports = {
     register,

@@ -17,15 +17,19 @@ const getUserProfile = async (req, res) => {
 };
 
 const updateUserProfile = async (req, res) => {
+
   try {
     const { nome, email, senhaAtual, novaSenha } = req.body;
-    const user = req.user;
+    const user = await User.findByPk(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({ errors: ["Usuário não encontrado."] });
+    }
 
     let imagem_perfil = user.imagem_perfil;
 
     if (req.file) {
       imagem_perfil = `/uploads/profile_images/${req.file.filename}`;
-
 
       if (user.imagem_perfil && fs.existsSync(path.join(__dirname, "..", user.imagem_perfil))) {
         fs.unlinkSync(path.join(__dirname, "..", user.imagem_perfil));
@@ -39,19 +43,20 @@ const updateUserProfile = async (req, res) => {
       }
     }
 
-    if (senhaAtual && novaSenha) {
-      const userFromDb = await User.findByPk(user.id);
+    let hashedPassword = user.senha;
 
-      const isPasswordCorrect = await bcrypt.compare(senhaAtual, userFromDb.senha);
+    if (senhaAtual && novaSenha) {
+      const senhaAtualFormatada = Array.isArray(senhaAtual) ? senhaAtual[0] : senhaAtual;
+
+      const isPasswordCorrect = await bcrypt.compare(senhaAtualFormatada, user.senha);
       if (!isPasswordCorrect) {
         return res.status(400).json({ errors: ["Senha atual incorreta."] });
       }
 
-      const hashedPassword = await bcrypt.hash(novaSenha, 10);
-      await userFromDb.update({ senha: hashedPassword });
+      hashedPassword = await bcrypt.hash(novaSenha, 10);
     }
 
-    await user.update({ nome, email, imagem_perfil });
+    await user.update({ nome, email, senha: hashedPassword, imagem_perfil });
 
     return res.json({ message: "Perfil atualizado com sucesso.", user });
 
@@ -59,6 +64,6 @@ const updateUserProfile = async (req, res) => {
     console.error("Erro ao atualizar perfil:", error);
     return res.status(500).json({ errors: ["Erro interno ao atualizar perfil."] });
   }
-}
+};
 
 module.exports = { getUserProfile, updateUserProfile };
