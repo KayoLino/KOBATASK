@@ -20,7 +20,7 @@ const Task = sequelize.define("Task", {
     allowNull: false,
   },
   status: {
-    type: DataTypes.ENUM("Pendente", "Em andamento", "Concluída"),
+    type: DataTypes.ENUM("Pendente", "Em andamento", "Concluída", "Atrasado"),
     allowNull: false,
     defaultValue: "Pendente",
   },
