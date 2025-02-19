@@ -7,7 +7,7 @@ import useRequireAuth from '@/hooks/useRequireAuth';
 
 import PrivateRoute from '@/components/PrivateRoute';
 
-export default function Home() {
+const Home: React.FC = () => {
 
   return (
     <PrivateRoute>
@@ -15,3 +15,5 @@ export default function Home() {
     </PrivateRoute>
   );
 }
+
+export default Home;

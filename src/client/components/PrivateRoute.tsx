@@ -2,7 +2,11 @@
 
 import useRequireAuth from '@/hooks/useRequireAuth';
 
-const PrivateRoute = ({ children }) => {
+interface PrivateRouteProps {
+  children: React.ReactNode;
+}
+
+const PrivateRoute = ({ children }: PrivateRouteProps) => {
   const { user, loading } = useRequireAuth();
 
   if (loading) return null;

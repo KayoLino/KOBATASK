@@ -1,6 +1,11 @@
 import Link from 'next/link';
 
-const ButtonEdit = ({ href, label }) => {
+interface ButtonEditProps {
+  href: string;
+  label: string;
+}
+
+const ButtonEdit = ({ href, label }: ButtonEditProps) => {
   return (
     <Link
       href={href}

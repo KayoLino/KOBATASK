@@ -1,6 +1,10 @@
-import Image from "next/image";
+import Image from 'next/image';
 
-const ProfileImage = ({ src }) => {
+interface ProfileImageProps {
+  src: string | undefined;
+}
+
+const ProfileImage = ({ src }: ProfileImageProps) => {
   const imageUrl = src ? `http://localhost:8000${src}` : "/userProfile/userNotProfile.png";
 
   return (

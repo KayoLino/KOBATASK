@@ -1,12 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, ChangeEvent } from 'react';
 import PrivateRoute from '@/components/PrivateRoute';
 import NavBar from '@/components/Navbar';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import InputField from '@/components/InputField';
 import Button from '@/components/Button';
-import ImageUploader from '@/components/ImageUploader';
 import PageTitle from '@/components/PageTitle';
 import Select from '@/components/Select';
 import TextArea from '@/components/TextArea';
@@ -14,9 +13,17 @@ import LayoutContainer from '@/components/LayoutConteiner';
 import ContentContainer from '@/components/ContentConteiner';
 import SidebarImage from '@/components/SideBarImg';
 
-const CreateTask = () => {
-  const [category, setCategory] = useState('Trabalho');
-  const [priority, setPriority] = useState('Média');
+const CreateTask: React.FC = () => {
+  const [category, setCategory] = useState<string>('Trabalho');
+  const [priority, setPriority] = useState<string>('Média');
+
+  const handleCategoryChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    setCategory(e.target.value);
+  };
+
+  const handlePriorityChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    setPriority(e.target.value);
+  };
 
   return (
     <PrivateRoute>
@@ -30,7 +37,7 @@ const CreateTask = () => {
             <Select
               label="Categoria:"
               value={category}
-              onChange={(e) => setCategory(e.target.value)}
+              onChange={handleCategoryChange}
               options={[
                 { value: 'Trabalho', label: 'Trabalho' },
                 { value: 'Pessoal', label: 'Pessoal' },
@@ -52,7 +59,7 @@ const CreateTask = () => {
             <Select
               label="Prioridade:"
               value={priority}
-              onChange={(e) => setPriority(e.target.value)}
+              onChange={handlePriorityChange}
               options={[
                 { value: 'Baixa', label: 'Baixa' },
                 { value: 'Média', label: 'Média' },
@@ -68,4 +75,5 @@ const CreateTask = () => {
     </PrivateRoute>
   );
 };
+
 export default CreateTask;

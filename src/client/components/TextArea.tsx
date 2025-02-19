@@ -1,4 +1,11 @@
-const TextArea = ({ label, value, onChange }) => {
+interface TextAreaProps {
+  label: string;
+  value: string;
+  onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  className?: string;
+}
+
+const TextArea = ({ label, value, onChange }: TextAreaProps) => {
   return (
     <div className="w-full mt-3 2xl:space-y-2 2xl:mt-4">
       <label className="text-red-500 text-lg font-semibold mb-2">{label}:</label>

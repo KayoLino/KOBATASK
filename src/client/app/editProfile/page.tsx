@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import Link from "next/link";
 import NavBar from '@/components/Navbar';
 import PrivateRoute from '@/components/PrivateRoute';
@@ -14,27 +14,37 @@ import SidebarImage from '@/components/SideBarImg';
 
 import { useRouter } from 'next/navigation';
 import axios from "axios";
-import { api } from "../../lib/api";
-import { useState, useEffect, useMemo } from 'react';
+import { api } from "@/lib/api";
+import { useState, useEffect, useMemo, ChangeEvent } from 'react';
 import { useUser } from '@/hooks/getUser';
 import { updateProfileValidation } from '@/hooks/updateProfileValidation';
 
+interface Error {
+  response?: {
+    data?: {
+      errors?: string[];
+    };
+  };
+}
+
 export default function EditProfile() {
   const { user } = useUser();
-  const [image, setImage] = useState(null);
-  const [previewImage, setPreviewImage] = useState('');
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [currentPassword, setCurrentPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [image, setImage] = useState<File | string | null>(null);
+  const [previewImage, setPreviewImage] = useState<string>('');
+  const [name, setName] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [currentPassword, setCurrentPassword] = useState<string>('');
+  const [newPassword, setNewPassword] = useState<string>('');
+  const [error, setError] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
 
-  const checkInputs = useMemo(() =>
-    updateProfileValidation(user, name, email, currentPassword, newPassword, previewImage),
-    [user, name, email, currentPassword, newPassword, previewImage]
-  );
+  const checkInputs = useMemo(() => {
+    if (user) {
+      return updateProfileValidation(user, name, email, currentPassword, newPassword, previewImage);
+    }
+    return false;
+  }, [user, name, email, currentPassword, newPassword, previewImage]);
 
   useEffect(() => {
     if (user) {
@@ -69,7 +79,7 @@ export default function EditProfile() {
 
       alert("Perfil atualizado com sucesso!");
       await router.push('/profile');
-    } catch (error) {
+    } catch (error: Error | any) {
       setError(error.response?.data?.errors?.[0] || error.message || "Erro ao atualizar perfil.");
     } finally {
       setLoading(false);
@@ -104,10 +114,10 @@ export default function EditProfile() {
           />
 
           <form className="flex justify-center items-center flex-col w-10/12 flex-grow">
-            <InputField label="Nome" type="text" value={name} onChange={(e) => setName(e.target.value)} />
-            <InputField label="Email" type="text" value={email} onChange={(e) => setEmail(e.target.value)} />
-            <InputField label="Senha atual" type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} />
-            <InputField label="Nova senha" type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
+            <InputField label="Nome" type="text" value={name} onChange={(e: ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
+            <InputField label="Email" type="text" value={email} onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)} />
+            <InputField label="Senha atual" type="password" value={currentPassword} onChange={(e: ChangeEvent<HTMLInputElement>) => setCurrentPassword(e.target.value)} />
+            <InputField label="Nova senha" type="password" value={newPassword} onChange={(e: ChangeEvent<HTMLInputElement>) => setNewPassword(e.target.value)} />
 
             <Button
               onClick={handleUpdateProfile}
@@ -116,12 +126,11 @@ export default function EditProfile() {
               className={checkInputs ? "w-1/2 my-4 px-4 font-semibold py-3 bg-red-500 text-white rounded-3xl hover:bg-red-600 transition" : "w-1/2 my-10 px-4 font-semibold py-3 bg-red-900 cursor-not-allowed text-gray-400 rounded-3xl transition"}
             />
 
-            {error && <ErrorMessage message={error} />
-            }
+            {error && <ErrorMessage message={error} />}
           </form>
         </ContentContainer>
         <SidebarImage src="/userProfile/profileImg.jpg" alt="Illustration" />
       </LayoutContainer>
-    </PrivateRoute >
+    </PrivateRoute>
   );
 }

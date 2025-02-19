@@ -1,19 +1,28 @@
 import Image from "next/image";
-import { useEffect } from "react";
 
-const ImageUploader = ({ previewImage, image, setImage, setPreviewImage }) => {
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
+interface ImageUploaderProps {
+  previewImage: string;
+  image: string | File | null;
+  setImage: (file: File) => void;
+  setPreviewImage: (url: string) => void;
+}
+
+const ImageUploader = ({ previewImage, image, setImage, setPreviewImage }: ImageUploaderProps) => {
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
     if (file) {
       setImage(file);
-      setPreviewImage(URL.createObjectURL(file)); // Criando um URL temporário da imagem
+      setPreviewImage(URL.createObjectURL(file));
     }
   };
 
   return (
-    <div className="my-6 relative group cursor-pointer" onClick={() => document.getElementById('fileInput').click()}>
+    <div
+      className="my-6 relative group cursor-pointer"
+      onClick={() => document.getElementById("fileInput")?.click()}
+    >
       <Image
-        src={previewImage || image || "/userProfile/userNotProfile.png"}
+        src={previewImage || (typeof image === 'string' ? image : '/userProfile/userNotProfile.png')}
         alt="Foto de perfil"
         width={120}
         height={120}

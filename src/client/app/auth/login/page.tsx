@@ -1,24 +1,21 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
-
 import ErrorMessage from '@/components/ErrorMessage';
+import axios from 'axios';
+import { api } from '../../../lib/api';
 
-import axios from "axios";
-
-import { api } from "../../../lib/api";
-
-function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [errors, setErrors] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+const Login: React.FC = () => {
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [errors, setErrors] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const router = useRouter();
 
-  const handleLogin = async (e) => {
+  const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     setIsLoading(true);
@@ -29,13 +26,12 @@ function Login() {
         return;
       }
 
-      const res = await axios.post(api + "auth/login", { email, password }, { withCredentials: true });
+      const res = await axios.post(api + 'auth/login', { email, password }, { withCredentials: true });
       setErrors('');
       setEmail('');
       setPassword('');
       router.push('/home');
-
-    } catch (error) {
+    } catch (error: any) {
       const errorMessage = error.response?.data?.errors?.[0] || 'Algo deu errado. Tente novamente mais tarde.';
       setErrors(errorMessage);
     } finally {
@@ -46,7 +42,6 @@ function Login() {
   return (
     <div className="bg-[url('/authImg/bgAuth.jpg')] bg-cover bg-center bg-no-repeat h-screen flex items-center justify-center">
       <div className="bg-white w-full md:w-3/5 max-w-[1000px] h-auto md:h-4/5 rounded-2xl flex flex-col md:flex-row shadow-lg overflow-hidden bg-opacity-80">
-
         <div className="flex flex-col justify-center p-6 sm:p-8 md:p-10 w-full md:w-7/12">
           {/* Titulo */}
           <h1 className="text-3xl md:text-3xl font-bold text-gray-800">Bem vindo(a) de volta!</h1>
@@ -76,8 +71,11 @@ function Login() {
               <Link href="register" className="hover:text-red-500 transition duration-300">Criar uma conta</Link>
               <Link href="#" className="hover:text-red-500 transition duration-300">Esqueceu sua senha?</Link>
             </div>
-            <button className="w-full bg-red-500 rounded-2xl text-white py-3 mt-6 font-medium hover:bg-red-600 transition" disabled={isLoading}>Entrar</button>
-            {errors && (<ErrorMessage message={errors} />
+            <button className="w-full bg-red-500 rounded-2xl text-white py-3 mt-6 font-medium hover:bg-red-600 transition" disabled={isLoading}>
+              Entrar
+            </button>
+            {errors && (
+              <ErrorMessage message={errors} />
             )}
           </form>
         </div>
@@ -90,6 +88,6 @@ function Login() {
       </div>
     </div>
   );
-}
+};
 
 export default Login;
