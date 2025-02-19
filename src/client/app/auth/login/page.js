@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
+import ErrorMessage from '@/components/ErrorMessage';
+
 import axios from "axios";
 
 import { api } from "../../../lib/api";
@@ -75,7 +77,8 @@ function Login() {
               <Link href="#" className="hover:text-red-500 transition duration-300">Esqueceu sua senha?</Link>
             </div>
             <button className="w-full bg-red-500 rounded-2xl text-white py-3 mt-6 font-medium hover:bg-red-600 transition" disabled={isLoading}>Entrar</button>
-            {errors && (<p className="mt-4 p-3 text-center bg-red-100 text-red-600 rounded-md">{errors}</p>)}
+            {errors && (<ErrorMessage message={errors} />
+            )}
           </form>
         </div>
 

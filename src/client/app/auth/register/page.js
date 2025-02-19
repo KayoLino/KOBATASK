@@ -5,6 +5,7 @@ import Link from 'next/link';
 import axios from 'axios';
 import { api } from '../../../lib/api';
 import { useRouter } from 'next/navigation';
+import ErrorMessage from '@/components/ErrorMessage';
 
 function RegisterPage() {
   const [name, setName] = useState('')
@@ -115,9 +116,7 @@ function RegisterPage() {
               Cadastrar-se
             </button>
             {errors && (
-              <div className="mt-4 p-3 text-center bg-red-100 text-red-600 rounded-lg">
-                {errors}
-              </div>
+              <ErrorMessage message={errors} />
             )}
           </form>
         </div>

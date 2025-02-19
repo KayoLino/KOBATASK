@@ -9,12 +9,12 @@ const useRequireAuth = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading && !user) {
-
-      router.push("auth/login");
+    if (!loading && user === null) {
+      router.push("/auth/login");
     }
   }, [loading, user, router]);
 
+  return { user, loading };
 };
 
 export default useRequireAuth;

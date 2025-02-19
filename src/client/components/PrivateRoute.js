@@ -3,14 +3,11 @@
 import useRequireAuth from '@/hooks/useRequireAuth';
 
 const PrivateRoute = ({ children }) => {
+  const { user, loading } = useRequireAuth();
 
-  useRequireAuth();
+  if (loading) return null;
 
-  return (
-    <>
-      {children}
-    </>
-  );
-}
+  return user ? <>{children}</> : null;
+};
 
 export default PrivateRoute;
