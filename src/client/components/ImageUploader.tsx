@@ -16,6 +16,7 @@ const ImageUploader = ({ previewImage, image, setImage, setPreviewImage }: Image
     }
   };
 
+
   return (
     <div
       className="my-6 relative group cursor-pointer"

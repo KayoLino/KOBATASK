@@ -18,16 +18,12 @@ const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const router = useRouter();
-  const pathname = usePathname(); // 📌 Pega a rota atual
+  const pathname = usePathname();
 
   const { user, loading } = useUser() as { user: User | null; loading: boolean };
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
-  };
-
-  const handleMouseLeave = () => {
-    setIsMenuOpen(false);
   };
 
   const toggleMobileMenu = () => {
