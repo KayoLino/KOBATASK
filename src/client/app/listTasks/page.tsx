@@ -36,7 +36,7 @@ const ListTasks = () => {
   useEffect(() => {
     const getListTasks = async () => {
       try {
-        const response = await axios.get(`${api}tasks/`, { withCredentials: true });
+        const response = await axios.get(`${api}/tasks/`, { withCredentials: true });
         console.log(response.data);
         if (Array.isArray(response.data.tasks)) {
           setTasks(response.data.tasks);

@@ -28,7 +28,7 @@ const RegisterPage: React.FC = () => {
         return;
       }
 
-      await axios.post(api + 'auth/register', { email, name, password, confirmPassword });
+      await axios.post(api + '/auth/register', { email, name, password, confirmPassword });
 
       setName('');
       setEmail('');

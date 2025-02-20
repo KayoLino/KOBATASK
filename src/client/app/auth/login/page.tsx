@@ -26,7 +26,7 @@ const Login: React.FC = () => {
         return;
       }
 
-      const res = await axios.post(api + 'auth/login', { email, password }, { withCredentials: true });
+      await axios.post(api + '/auth/login', { email, password }, { withCredentials: true });
       setErrors('');
       setEmail('');
       setPassword('');

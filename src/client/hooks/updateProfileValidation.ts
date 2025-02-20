@@ -1,8 +1,6 @@
-interface User {
-  nome: string;
-  email: string;
-  imagem_perfil?: string;
-}
+import { api } from '@/lib/api';
+import { User } from '@/types/user';
+
 
 export const updateProfileValidation = (
   user: User | null,
@@ -19,7 +17,7 @@ export const updateProfileValidation = (
     return true;
   }
 
-  if (previewImage && previewImage !== `http://localhost:8000${user?.imagem_perfil}`) {
+  if (previewImage && previewImage !== `${api}${user?.imagem_perfil}`) {
     return true;
   }
 

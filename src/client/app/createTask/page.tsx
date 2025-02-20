@@ -40,6 +40,20 @@ const CreateTask: React.FC = () => {
     setPriority(e.target.value);
   };
 
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>, setter: React.Dispatch<React.SetStateAction<Date | undefined>>) => {
+    const value = e.target.value;
+
+    if (!value) {
+      setter(undefined);
+      return;
+    }
+
+    const date = new Date(value);
+    date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+    setter(date);
+  };
+
+
 
   const handleCreateTask = async (e: any) => {
 
@@ -55,7 +69,7 @@ const CreateTask: React.FC = () => {
 
       const status = "Pendente";
 
-      await axios.post(`${api}tasks/create`, { nameTask, category, description, status, initDate, finishDate }, {
+      await axios.post(`${api}/tasks/create`, { nameTask, category, description, status, initDate, finishDate, priority }, {
         withCredentials: true,
       })
 
@@ -101,8 +115,8 @@ const CreateTask: React.FC = () => {
               onChange={handleCategoryChange}
               options={[
                 { value: 'Trabalho', label: 'Trabalho' },
+                { value: 'Projeto', label: 'Projeto' },
                 { value: 'Pessoal', label: 'Pessoal' },
-                { value: 'Estudo', label: 'Estudo' },
               ]}
             />
 
@@ -110,13 +124,24 @@ const CreateTask: React.FC = () => {
 
             <div className="w-full flex flex-col sm:flex-row sm:justify-between space-y-4 sm:space-y-0 sm:gap-4">
               <div className="w-full sm:w-1/2">
-                <InputField label="Data de início" type="date" value={initDate ? initDate.toISOString().split("T")[0] : ""} onChange={e => setInitDate(new Date(e.target.value))} className="w-full" />
+                <InputField
+                  label="Data de início"
+                  type="datetime-local"
+                  value={initDate ? initDate.toISOString().slice(0, 16) : ""}
+                  onChange={(e) => handleDateChange(e, setInitDate)}
+                  className="w-full"
+                />
               </div>
               <div className="w-full sm:w-1/2">
-                <InputField label="Data de fim" type="date" value={finishDate ? finishDate.toISOString().split("T")[0] : ""} onChange={e => setFinishDate(new Date(e.target.value))} className="w-full" />
+                <InputField
+                  label="Data de fim"
+                  type="datetime-local"
+                  value={finishDate ? finishDate.toISOString().slice(0, 16) : ""}
+                  onChange={(e) => handleDateChange(e, setFinishDate)}
+                  className="w-full"
+                />
               </div>
             </div>
-
             <Select
               label="Prioridade:"
               value={priority}

@@ -1,12 +1,20 @@
 const User = require("../model/User");
 const Task = require("../model/Task");
 
-const checkCategoryAndStatus = (category, status) => {
+const adjustToUTC3 = (date) => {
+  const d = new Date(date);
+  d.setHours(d.getHours() + 3);
+  return d;
+};
+
+const checkEnums = (category, status, priority) => {
   const validCategories = ["Trabalho", "Projeto", "Pessoal"];
   const validStatuses = ["Pendente", "Em andamento", "Concluída", "Atrasado"];
+  const validPriority = ["Baixa", "Média", "Alta"];
 
   if (!validCategories.includes(category)) return { error: "Categoria inválida." };
   if (!validStatuses.includes(status)) return { error: "Status inválido." };
+  if (!validPriority.includes(priority)) return { error: "Prioridade inválida." };
 
   return null;
 };
@@ -20,20 +28,26 @@ const checkDate = (finishDate, initDate) => {
 
 const createTask = async (req, res) => {
   try {
-    const { nameTask, category, description, status, initDate, finishDate } = req.body;
-    const categoryStatusError = checkCategoryAndStatus(category, status);
-    if (categoryStatusError) return res.status(400).json({ errors: [categoryStatusError.error] });
+    const { nameTask, category, description, status, initDate, finishDate, priority } = req.body;
+
+    const enumsError = checkEnums(category, status, priority);
+    if (enumsError) return res.status(400).json({ errors: [enumsError.error] });
 
     const dateError = checkDate(finishDate, initDate);
     if (dateError) return res.status(400).json({ errors: [dateError.error] });
+
+
+    const initDateUtc3 = adjustToUTC3(initDate);
+    const finishDateUtc3 = adjustToUTC3(finishDate);
 
     const newTask = await Task.create({
       nome: nameTask,
       categoria: category,
       descricao: description,
       status,
-      dataInicio: initDate,
-      dataFim: finishDate,
+      dataInicio: initDateUtc3,
+      dataFim: finishDateUtc3,
+      prioridade: priority,
       userId: req.user.id,
     });
 
@@ -46,20 +60,31 @@ const createTask = async (req, res) => {
 
 const updateTask = async (req, res) => {
   try {
-    const { nameTask, category, description, status, initDate, finishDate } = req.body;
+    const { nameTask, category, description, status, initDate, finishDate, priority } = req.body;
     const { taskId } = req.params;
 
-    const categoryStatusError = checkCategoryAndStatus(category, status);
-    if (categoryStatusError) return res.status(400).json({ errors: [categoryStatusError.error] });
+    const enumsError = checkEnums(category, status, priority);
+    if (enumsError) return res.status(400).json({ errors: [enumsError.error] });
 
     const dateError = checkDate(finishDate, initDate);
     if (dateError) return res.status(400).json({ errors: [dateError.error] });
+
+    const initDateUtc3 = adjustToUTC3(initDate);
+    const finishDateUtc3 = adjustToUTC3(finishDate);
 
     const taskExists = await Task.findOne({ where: { id: taskId, userId: req.user.id } });
     if (!taskExists) return res.status(404).json({ errors: ["Tarefa não encontrada."] });
 
     await Task.update(
-      { nome: nameTask, categoria: category, descricao: description, status, dataInicio: initDate, dataFim: finishDate },
+      {
+        nome: nameTask,
+        categoria: category,
+        descricao: description,
+        status,
+        dataInicio: initDate,
+        dataFim: finishDate,
+        prioridade: priority
+      },
       { where: { id: taskId, userId: req.user.id } }
     );
 
@@ -90,13 +115,18 @@ const getTasks = async (req, res) => {
   try {
     const tasks = await Task.findAll({ where: { userId: req.user.id } });
 
-    const now = new Date(new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" }));
+    const now = new Date();
+    now.setHours(now.getHours() - now.getTimezoneOffset() / 60 + 3);
 
     const updatedTasks = tasks.map(task => {
-      const finishDate = new Date(new Date(task.dataFim).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" }));
+      const finishDate = new Date(task.dataFim);
+
+      const isLate = finishDate < now && task.status !== "Concluída";
+
       return {
         ...task.toJSON(),
-        status: finishDate < now && task.status !== "Concluída" ? "Atrasado" : task.status
+        dataFim: finishDate,
+        status: isLate ? "Atrasado" : task.status
       };
     });
 
@@ -118,8 +148,6 @@ const getTaskById = async (req, res) => {
   try {
 
     const task = await Task.findOne({ where: { id: taskId, userId: req.user.id } });
-
-
 
     if (!task) {
       return res.status(400).json({ errors: ["Tarefa não encontrada."] })

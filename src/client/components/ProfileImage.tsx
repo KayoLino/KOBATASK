@@ -1,11 +1,12 @@
 import Image from 'next/image';
+import { localhost } from '@/lib/api'
 
 interface ProfileImageProps {
   src: string | undefined;
 }
 
 const ProfileImage = ({ src }: ProfileImageProps) => {
-  const imageUrl = src ? `http://localhost:8000${src}` : "/userProfile/userNotProfile.png";
+  const imageUrl = src ? `${localhost}${src}` : "/userProfile/userNotProfile.png";
 
   return (
     <div className="my-6">

@@ -33,6 +33,11 @@ const Task = sequelize.define("Task", {
     type: DataTypes.DATE,
     allowNull: false,
   },
+  prioridade: {
+    type: DataTypes.ENUM("Baixa", "Média", "Alta"),
+    allowNull: false,
+    defaultValue: "Média"
+  },
   userId: {
     type: DataTypes.INTEGER,
     allowNull: false,

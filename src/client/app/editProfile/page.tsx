@@ -14,7 +14,7 @@ import SidebarImage from '@/components/SideBarImg';
 
 import { useRouter } from 'next/navigation';
 import axios from "axios";
-import { api } from "@/lib/api";
+import { api, localhost } from "@/lib/api";
 import { useState, useEffect, useMemo, ChangeEvent } from 'react';
 import { useUser } from '@/hooks/getUser';
 import { updateProfileValidation } from '@/hooks/updateProfileValidation';
@@ -50,7 +50,7 @@ export default function EditProfile() {
     if (user) {
       setName(user.nome || '');
       setEmail(user.email || '');
-      setImage(user.imagem_perfil ? `http://localhost:8000${user.imagem_perfil}` : "/userProfile/userNotProfile.png");
+      setImage(user.imagem_perfil ? `${localhost}${user.imagem_perfil}` : "/userProfile/userNotProfile.png");
       setLoading(false);
     }
   }, [user]);
@@ -72,7 +72,7 @@ export default function EditProfile() {
         formData.append("imagem_perfil", image);
       }
 
-      await axios.put(api + "users/update", formData, {
+      await axios.put(api + "/users/update", formData, {
         withCredentials: true,
         headers: { "Content-Type": "multipart/form-data" }
       });

@@ -32,7 +32,7 @@ export default function Profile() {
         <ContentContainer>
           <PageTitle title="Meu Perfil" subtitle="Visualize suas informações de perfil." />
           <div className="my-6">
-            <ProfileImage src={user?.imagem_perfil || "/userProfile/userNotProfile.png"} />
+            <ProfileImage src={user?.imagem_perfil || null} />
           </div>
           <div className="flex justify-center items-center flex-col w-10/12 flex-grow space-y-4">
             <ProfileField label="Nome" value={user?.nome || "Nome não disponível"} />

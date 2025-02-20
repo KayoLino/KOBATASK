@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import axios from 'axios';
-import { api } from '../lib/api';
+import { api, localhost } from '../lib/api';
 import { FiMenu, FiX } from 'react-icons/fi';
 
 import { useUser } from '@/hooks/getUser';
@@ -32,7 +32,7 @@ const NavBar = () => {
 
   const handleLogout = async () => {
     try {
-      await axios.post(api + "auth/logout", {}, { withCredentials: true });
+      await axios.post(api + "/auth/logout", {}, { withCredentials: true });
       router.push('/auth/login');
     } catch (error) {
       console.log("Ocorreu algum erro: " + error);
@@ -73,7 +73,7 @@ const NavBar = () => {
 
       <div className="hidden md:flex relative items-center gap-4 cursor-pointer" onClick={toggleMenu}>
         <img
-          src={user?.imagem_perfil ? `http://localhost:8000${user.imagem_perfil}` : "/userProfile/userNotProfile.png"}
+          src={user?.imagem_perfil ? `${localhost}${user.imagem_perfil}` : "/userProfile/userNotProfile.png"}
           alt="Foto de Perfil"
           className="w-10 h-10 rounded-full border-4 border-gray-300 shadow-lg"
         />
@@ -129,7 +129,7 @@ const NavBar = () => {
 
         <div className="flex items-center gap-4 w-full mt-4">
           <img
-            src={user?.imagem_perfil ? `http://localhost:8000${user.imagem_perfil}` : "/userProfile/userNotProfile.png"}
+            src={user?.imagem_perfil ? `${localhost}${user.imagem_perfil}` : "/userProfile/userNotProfile.png"}
             alt="Foto de Perfil"
             className="w-12 h-12 rounded-full object-cover border-4 border-gray-300 shadow-lg"
           />

@@ -1,6 +1,6 @@
 const sequelize = require("./database");
 
-const setup = async() => {
+const setup = async () => {
     return sequelize.sync();
 }
 
