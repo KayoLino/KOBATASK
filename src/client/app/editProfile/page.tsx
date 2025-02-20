@@ -41,7 +41,7 @@ export default function EditProfile() {
 
   const checkInputs = useMemo(() => {
     if (user) {
-      return updateProfileValidation(user, name, email, currentPassword, newPassword, previewImage);
+      return updateProfileValidation(user, name, email, newPassword, previewImage);
     }
     return false;
   }, [user, name, email, currentPassword, newPassword, previewImage]);
@@ -85,6 +85,8 @@ export default function EditProfile() {
       setLoading(false);
     }
   };
+
+
 
   if (loading) {
     return (

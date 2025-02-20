@@ -8,7 +8,6 @@ export const updateProfileValidation = (
   user: User | null,
   name: string,
   email: string,
-  currentPassword: string,
   newPassword: string,
   previewImage: string | undefined
 ): boolean => {

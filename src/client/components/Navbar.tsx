@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import axios from 'axios';
 import { api } from '../lib/api';
@@ -18,6 +18,7 @@ const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const router = useRouter();
+  const pathname = usePathname(); // 📌 Pega a rota atual
 
   const { user, loading } = useUser() as { user: User | null; loading: boolean };
 
@@ -54,9 +55,24 @@ const NavBar = () => {
 
       {/* Menu Desktop */}
       <div className="hidden md:flex gap-10 items-center">
-        <Link href="#" className="hover:text-red-400">Lista de Tarefas</Link>
-        <Link href="/createTask" className="hover:text-red-400">Adicionar novas Tarefas</Link>
-        <Link href="#" className="hover:text-red-400">O que é o KOBATASK?</Link>
+        <Link
+          href="/listTasks"
+          className={`hover:text-red-400 ${pathname === "/listTasks" ? "text-red-500 font-bold" : ""}`}
+        >
+          Lista de Tarefas
+        </Link>
+        <Link
+          href="/createTask"
+          className={`hover:text-red-400 ${pathname === "/createTask" ? "text-red-500 font-bold" : ""}`}
+        >
+          Adicionar novas Tarefas
+        </Link>
+        <Link
+          href="#"
+          className={`hover:text-red-400 ${pathname === "/about" ? "text-red-500 font-bold" : ""}`}
+        >
+          O que é o KOBATASK?
+        </Link>
       </div>
 
       <div className="hidden md:flex relative items-center gap-4 cursor-pointer" onClick={toggleMenu}>
@@ -91,9 +107,27 @@ const NavBar = () => {
       >
         <button className="self-end text-2xl text-gray-600 hover:text-red-500 transition-colors duration-200" onClick={toggleMobileMenu}><FiX /></button>
 
-        <Link href="#" className="w-full text-lg font-semibold text-gray-700 py-2 hover:text-red-400 transition-colors duration-200" onClick={toggleMobileMenu}>Lista de Tarefas</Link>
-        <Link href="/createTask" className="w-full text-lg font-semibold text-gray-700 py-2 hover:text-red-400 transition-colors duration-200" onClick={toggleMobileMenu}>Adicionar novas Tarefas</Link>
-        <Link href="#" className="w-full text-lg font-semibold text-gray-700 py-2 hover:text-red-400 transition-colors duration-200" onClick={toggleMobileMenu}>O que é o KOBATASK?</Link>
+        <Link
+          href="/listTasks"
+          className={`w-full text-lg font-semibold py-2 transition-colors duration-200 ${pathname === "/listTasks" ? "text-red-500 font-bold" : "text-gray-700 hover:text-red-400"}`}
+          onClick={toggleMobileMenu}
+        >
+          Lista de Tarefas
+        </Link>
+        <Link
+          href="/createTask"
+          className={`w-full text-lg font-semibold py-2 transition-colors duration-200 ${pathname === "/createTask" ? "text-red-500 font-bold" : "text-gray-700 hover:text-red-400"}`}
+          onClick={toggleMobileMenu}
+        >
+          Adicionar novas Tarefas
+        </Link>
+        <Link
+          href="#"
+          className={`w-full text-lg font-semibold py-2 transition-colors duration-200 ${pathname === "/about" ? "text-red-500 font-bold" : "text-gray-700 hover:text-red-400"}`}
+          onClick={toggleMobileMenu}
+        >
+          O que é o KOBATASK?
+        </Link>
 
         <hr className="w-full border-t mt-4 border-gray-200" />
 

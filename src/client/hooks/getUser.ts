@@ -8,7 +8,6 @@ interface User {
   email: string;
 }
 
-
 export const useUser = () => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);

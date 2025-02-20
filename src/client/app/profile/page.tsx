@@ -8,7 +8,7 @@ import ProfileImage from "@/components/ProfileImage";
 import LayoutContainer from '@/components/LayoutConteiner';
 import ContentContainer from '@/components/ContentConteiner';
 import SidebarImage from '@/components/SideBarImg';
-import ButtonEdit from '@/components/ButtonEdit';
+import ButtonLink from '@/components/ButtonLink';
 
 import { useUser } from '@/hooks/getUser';
 
@@ -38,7 +38,7 @@ export default function Profile() {
             <ProfileField label="Nome" value={user?.nome || "Nome não disponível"} />
             <ProfileField label="Email" value={user?.email || "E-mail não disponível"} />
             <ProfileField label="Senha" value="*********" />
-            <ButtonEdit href="/editProfile" label="Editar Perfil" />
+            <ButtonLink href="/editProfile" label="Editar Perfil" />
           </div>
         </ContentContainer>
         <SidebarImage src="/userProfile/profileImg.jpg" alt="Illustration" />

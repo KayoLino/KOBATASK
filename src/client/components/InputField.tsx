@@ -7,7 +7,7 @@ interface InputFieldProps {
 }
 
 const InputField = ({ label, type = "text", value, onChange, className }: InputFieldProps) => (
-  <div className={`w-full mt-3 2xl:space-y-2 2xl:mt-4 ${className}`}> {/* Aplicando className aqui */}
+  <div className={`w-full mt-3 2xl:space-y-2 2xl:mt-4 ${className}`}>
     <label className="text-red-500 text-lg font-semibold mb-2">{label}:</label>
     <input
       type={type}

@@ -1,11 +1,11 @@
 import Link from 'next/link';
 
-interface ButtonEditProps {
+interface ButtonLinkProps {
   href: string;
   label: string;
 }
 
-const ButtonEdit = ({ href, label }: ButtonEditProps) => {
+const ButtonLink = ({ href, label }: ButtonLinkProps) => {
   return (
     <Link
       href={href}
@@ -16,4 +16,4 @@ const ButtonEdit = ({ href, label }: ButtonEditProps) => {
   );
 }
 
-export default ButtonEdit;
+export default ButtonLink;

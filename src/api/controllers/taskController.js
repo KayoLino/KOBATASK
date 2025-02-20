@@ -3,7 +3,7 @@ const Task = require("../model/Task");
 
 const checkCategoryAndStatus = (category, status) => {
   const validCategories = ["Trabalho", "Projeto", "Pessoal"];
-  const validStatuses = ["Pendente", "Em andamento", "Concluída", "Atrasada"];
+  const validStatuses = ["Pendente", "Em andamento", "Concluída", "Atrasado"];
 
   if (!validCategories.includes(category)) return { error: "Categoria inválida." };
   if (!validStatuses.includes(status)) return { error: "Status inválido." };
@@ -96,7 +96,7 @@ const getTasks = async (req, res) => {
       const finishDate = new Date(new Date(task.dataFim).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" }));
       return {
         ...task.toJSON(),
-        status: finishDate < now && task.status !== "Concluída" ? "Atrasada" : task.status
+        status: finishDate < now && task.status !== "Concluída" ? "Atrasado" : task.status
       };
     });
 
@@ -107,9 +107,36 @@ const getTasks = async (req, res) => {
   }
 };
 
+const getTaskById = async (req, res) => {
+
+  const { taskId } = req.params;
+
+  if (!taskId) {
+    return res.status(400).json({ errors: ["ID da tarefa não fornecido."] });
+  }
+
+  try {
+
+    const task = await Task.findOne({ where: { id: taskId, userId: req.user.id } });
+
+
+
+    if (!task) {
+      return res.status(400).json({ errors: ["Tarefa não encontrada."] })
+    }
+
+    return res.status(200).json({ task });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ errors: ["Erro interno no servidor."] });
+  }
+}
+
 module.exports = {
   createTask,
   updateTask,
   deleteTask,
   getTasks,
+  getTaskById,
 };

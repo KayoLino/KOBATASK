@@ -8,12 +8,12 @@ import { useRouter } from 'next/navigation';
 import ErrorMessage from '@/components/ErrorMessage';
 
 const RegisterPage: React.FC = () => {
-  const [name, setName] = useState < string > ('');
-  const [email, setEmail] = useState < string > ('');
-  const [password, setPassword] = useState < string > ('');
-  const [confirmPassword, setConfirmPassword] = useState < string > ('');
-  const [isLoading, setIsLoading] = useState < boolean > (false);
-  const [errors, setErrors] = useState < string > ('');
+  const [name, setName] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [confirmPassword, setConfirmPassword] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [errors, setErrors] = useState<string>('');
 
   const router = useRouter();
 
@@ -28,7 +28,7 @@ const RegisterPage: React.FC = () => {
         return;
       }
 
-      const res = await axios.post(api + 'auth/register', { email, name, password, confirmPassword });
+      await axios.post(api + 'auth/register', { email, name, password, confirmPassword });
 
       setName('');
       setEmail('');
