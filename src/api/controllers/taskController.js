@@ -81,8 +81,8 @@ const updateTask = async (req, res) => {
         categoria: category,
         descricao: description,
         status,
-        dataInicio: initDate,
-        dataFim: finishDate,
+        dataInicio: initDateUtc3,
+        dataFim: finishDateUtc3,
         prioridade: priority
       },
       { where: { id: taskId, userId: req.user.id } }
@@ -95,6 +95,55 @@ const updateTask = async (req, res) => {
     return res.status(500).json({ errors: ["Erro interno no servidor."] });
   }
 };
+
+const completeTask = async (req, res) => {
+  const { taskId } = req.params;
+
+  try {
+    if (!taskId) {
+      return res.status(400).json({ errors: ["ID da tarefa não fornecido."] });
+    }
+
+    const task = await Task.findOne({ where: { id: taskId, userId: req.user.id } });
+
+    if (!task) {
+      return res.status(404).json({ errors: ["Tarefa não encontrada."] });
+    }
+
+    await task.update({ status: "Concluída" });
+
+    return res.status(200).json({ message: "Tarefa concluída com sucesso!" });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ errors: ["Erro interno no servidor."] });
+  }
+};
+
+const incompleteTask = async (req, res) => {
+
+  const { taskId } = req.params;
+
+  try {
+    if (!taskId) {
+      return res.status(400).json({ errors: ["ID da tarefa não fornecido."] });
+    }
+
+    const task = await Task.findOne({ where: { id: taskId, userId: req.user.id } });
+
+    if (!task) {
+      return res.status(404).json({ errors: ["Tarefa não encontrada."] });
+    }
+
+    await task.update({ status: "Em andamento" });
+
+    return res.status(200).json({ message: "Tarefa atualizada para (Em andamento)." });
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: ["Error interno no servidor."] })
+  }
+}
 
 const deleteTask = async (req, res) => {
   try {
@@ -115,22 +164,13 @@ const getTasks = async (req, res) => {
   try {
     const tasks = await Task.findAll({ where: { userId: req.user.id } });
 
-    const now = new Date();
-    now.setHours(now.getHours() - now.getTimezoneOffset() / 60 + 3);
+    const formattedTasks = tasks.map(task => ({
+      ...task.toJSON(),
+      dataInicio: new Date(task.dataInicio),
+      dataFim: new Date(task.dataFim),
+    }));
 
-    const updatedTasks = tasks.map(task => {
-      const finishDate = new Date(task.dataFim);
-
-      const isLate = finishDate < now && task.status !== "Concluída";
-
-      return {
-        ...task.toJSON(),
-        dataFim: finishDate,
-        status: isLate ? "Atrasado" : task.status
-      };
-    });
-
-    return res.status(200).json({ tasks: updatedTasks });
+    return res.status(200).json({ tasks: formattedTasks });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ errors: ["Erro interno no servidor."] });
@@ -167,4 +207,6 @@ module.exports = {
   deleteTask,
   getTasks,
   getTaskById,
+  completeTask,
+  incompleteTask,
 };

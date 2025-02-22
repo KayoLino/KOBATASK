@@ -121,10 +121,11 @@ const ListTasks = () => {
                   <li key={task.id} className="flex flex-col sm:flex-row justify-between items-center gap-4 px-4 sm:px-6 py-6 border-b border-gray-200 hover:bg-gray-50 text-center sm:text-left shadow-sm">
                     <div className="flex flex-col items-center sm:items-start">
                       <p className="text-base font-semibold text-red-600">{task.categoria}</p>
-                      <p className="text-gray-700 text-sm">{new Date(task.dataInicio).toLocaleString()}</p>
+                      <p className="text-gray-700 font-medium text-sm lg:text-nowrap">{new Date(task.dataInicio).toLocaleDateString()}</p>
+                      <p className="text-gray-400 text-sm">{new Date(task.dataInicio).toLocaleTimeString()}</p> {/* Hora embaixo da data */}
                     </div>
 
-                    <p className="text-gray-500 text-lg text-center sm:text-left">{task.nome}</p>
+                    <p className="text-gray-500 2xl:text-lg text-center text-nowrap sm:text-left lg:text-sm">{task.nome}</p>
 
                     <div className="flex flex-col items-center">
                       <span className={`text-sm font-semibold py-2 px-4 rounded-full text-nowrap ${getStatusClass(task.status)}`}>
@@ -144,7 +145,7 @@ const ListTasks = () => {
 
           {/* Botão de Criar Nova Tarefa */}
           <div className="mt-8 flex justify-center w-full px-6">
-            <ButtonLink href="/createTask" label="Criar nova Tarefa" />
+            <ButtonLink href="/createTask" label="Criar nova Tarefa" className="w-1/2 my-5 px-4 font-semibold py-3 bg-red-500 text-white rounded-3xl hover:bg-red-600 transition text-center" />
           </div>
         </ContentContainer>
 

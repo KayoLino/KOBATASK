@@ -1,5 +1,4 @@
 'use client';
-import Link from "next/link";
 import NavBar from '@/components/Navbar';
 import PrivateRoute from '@/components/PrivateRoute';
 import LoadingSpinner from '@/components/LoadingSpinner';
@@ -11,6 +10,7 @@ import ErrorMessage from '@/components/ErrorMessage';
 import LayoutContainer from '@/components/LayoutConteiner';
 import ContentContainer from '@/components/ContentConteiner';
 import SidebarImage from '@/components/SideBarImg';
+import ArrowBack from '@/components/ArrowBack';
 
 import { useRouter } from 'next/navigation';
 import axios from "axios";
@@ -102,9 +102,8 @@ export default function EditProfile() {
       <NavBar />
       <LayoutContainer>
         <ContentContainer>
-          <Link href="/profile">
-            <div className="absolute top-4 left-4 cursor-pointer p-2 text-red-500 text-3xl font-bold hover:text-red-700 transition">&lt;</div>
-          </Link>
+
+          <ArrowBack href='/profile' />
 
           <PageTitle title="Edição de Perfil" subtitle="Edite seu perfil da melhor forma." />
 

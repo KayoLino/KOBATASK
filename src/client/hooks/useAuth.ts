@@ -15,6 +15,7 @@ const useAuth = () => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
+
         const response = await axios.get(api + '/auth/authCheck', {
           withCredentials: true,
         });
@@ -41,7 +42,7 @@ const useAuth = () => {
     };
 
     checkAuth();
-  }, [router]);
+  }, [router, user]);
 
   return { user, loading };
 };

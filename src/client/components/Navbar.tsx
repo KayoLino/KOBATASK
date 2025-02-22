@@ -52,8 +52,8 @@ const NavBar = () => {
       {/* Menu Desktop */}
       <div className="hidden md:flex gap-10 items-center">
         <Link
-          href="/listTasks"
-          className={`hover:text-red-400 ${pathname === "/listTasks" ? "text-red-500 font-bold" : ""}`}
+          href="/tasks"
+          className={`hover:text-red-400 ${pathname === "/tasks" ? "text-red-500 font-bold" : ""}`}
         >
           Lista de Tarefas
         </Link>
@@ -104,7 +104,7 @@ const NavBar = () => {
         <button className="self-end text-2xl text-gray-600 hover:text-red-500 transition-colors duration-200" onClick={toggleMobileMenu}><FiX /></button>
 
         <Link
-          href="/listTasks"
+          href="/tasks"
           className={`w-full text-lg font-semibold py-2 transition-colors duration-200 ${pathname === "/listTasks" ? "text-red-500 font-bold" : "text-gray-700 hover:text-red-400"}`}
           onClick={toggleMobileMenu}
         >

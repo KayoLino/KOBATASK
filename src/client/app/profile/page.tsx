@@ -38,7 +38,7 @@ export default function Profile() {
             <ProfileField label="Nome" value={user?.nome || "Nome não disponível"} />
             <ProfileField label="Email" value={user?.email || "E-mail não disponível"} />
             <ProfileField label="Senha" value="*********" />
-            <ButtonLink href="/editProfile" label="Editar Perfil" />
+            <ButtonLink href="/editProfile" label="Editar Perfil" className="w-1/2 my-5 px-4 font-semibold py-3 bg-red-500 text-white rounded-3xl hover:bg-red-600 transition text-center" />
           </div>
         </ContentContainer>
         <SidebarImage src="/userProfile/profileImg.jpg" alt="Illustration" />

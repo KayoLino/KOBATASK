@@ -9,6 +9,8 @@ const createServer = async () => {
 
     await setupDB();
 
+    require("./services/taskScheduler");
+
     const app = express();
     const path = require("path");
 
@@ -16,7 +18,7 @@ const createServer = async () => {
     app.use(express.urlencoded({ extended: true }));
 
     app.use(cors({
-        origin: 'http://192.168.5.123:3000',
+        origin: 'http://localhost:3000',
         credentials: true,
     }));
 

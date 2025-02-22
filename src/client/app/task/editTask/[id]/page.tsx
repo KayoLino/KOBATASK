@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, ChangeEvent } from 'react';
+import { useParams } from 'next/navigation';
+import { useState, ChangeEvent, useEffect } from 'react';
 import axios from 'axios';
 import { api } from "@/lib/api";
 import { useRouter } from 'next/navigation';
@@ -17,38 +18,53 @@ import ContentContainer from '@/components/ContentConteiner';
 import SidebarImage from '@/components/SideBarImg';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import ErrorMessage from '@/components/ErrorMessage';
+import ArrowBack from '@/components/ArrowBack';
 
-import { handleCategoryChange, handleDateChange, handlePriorityChange } from '@/hooks/handleChange';
+import { handleCategoryChange, handleDateChange, handlePriorityChange, handleStatusChange } from '@/hooks/handleChange';
+import { useGetTask } from '@/hooks/useGetTask';
 
+const EditTask = () => {
 
+  const { id } = useParams();
 
-const CreateTask: React.FC = () => {
-  const [nameTask, setNameTask] = useState<string>('');
-  const [category, setCategory] = useState<string>('Trabalho');
-  const [description, setDescription] = useState<string>('');
-  const [initDate, setInitDate] = useState<Date | undefined>(undefined);
-  const [finishDate, setFinishDate] = useState<Date | undefined>(undefined);
-  const [priority, setPriority] = useState<string>('Média');
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>('');
+  const { task, loading: loadingTask } = useGetTask(id);
 
   const router = useRouter();
 
-  const handleCreateTask = async (e: any) => {
+  const [nameTask, setNameTask] = useState<string>('');
+  const [category, setCategory] = useState<string>('Trabalho');
+  const [description, setDescription] = useState<string>('');
+  const [status, setStatus] = useState<string>('');
+  const [initDate, setInitDate] = useState<Date | undefined>(undefined);
+  const [finishDate, setFinishDate] = useState<Date | undefined>(undefined);
+  const [priority, setPriority] = useState<string>('Média');
+  const [error, setError] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
+
+  console.log("Recebendo da API:", task?.dataInicio, task?.dataFim);
+  console.log("Convertido para Date:", new Date(task?.dataInicio), new Date(task?.dataFim));
+
+
+  useEffect(() => {
+    if (task) {
+      setNameTask(task.nome || '');
+      setCategory(task.categoria || 'Trabalho');
+      setDescription(task.descricao || '');
+      setStatus(task.status || '');
+      setInitDate(task.dataInicio ? new Date(task.dataInicio) : undefined);
+      setFinishDate(task.dataFim ? new Date(task.dataFim) : undefined);
+      setPriority(task.prioridade || 'Média');
+    }
+  }, [task]);
+
+  const handleEditTask = async (e: any) => {
 
     e.preventDefault();
+    setLoading(true)
 
     try {
-      setLoading(true);
 
-      if (!nameTask || !category || !description || !initDate || !finishDate || !priority) {
-        setError('Preencha todos os campos!');
-        return;
-      }
-
-      const status = "Pendente";
-
-      await axios.post(`${api}/tasks/`, { nameTask, category, description, status, initDate, finishDate, priority }, {
+      await axios.put(`${api}/tasks/${id}`, { nameTask, category, description, status, initDate, finishDate, priority }, {
         withCredentials: true,
       })
 
@@ -57,19 +73,17 @@ const CreateTask: React.FC = () => {
       setInitDate(undefined);
       setFinishDate(undefined);
 
-      alert("Tarefa Criada");
-      await router.push('/tasks');
+      alert("Tarefa atualizada");
+      await router.push(`/task/${id}`);
 
     } catch (error) {
       const errorMessage = error.response?.data?.errors?.[0] || 'Algo deu errado. Tente novamente mais tarde.';
       setError(errorMessage);
       console.log(error.response?.data?.errors?.[0]);
-    } finally {
-      setLoading(false);
     }
   }
 
-  if (loading) {
+  if (loadingTask) {
     return (
       <PrivateRoute>
         <NavBar />
@@ -78,13 +92,14 @@ const CreateTask: React.FC = () => {
     );
   }
 
-
   return (
     <PrivateRoute>
       <NavBar />
       <LayoutContainer>
         <ContentContainer>
-          <PageTitle title="Criar nova Tarefa" subtitle="Crie tarefas para ter uma vida mais organizada!" />
+          <ArrowBack href={`/task/${id}`} />
+          <PageTitle title="Edição de tarefa" subtitle="Modo edição de tarefa" />
+
           <form className="flex justify-center items-center flex-col w-full sm:w-10/12 flex-grow space-y-4">
             <InputField label="Nome da tarefa" type="text" className="w-full" value={nameTask} onChange={e => setNameTask(e.target.value)} />
 
@@ -100,6 +115,18 @@ const CreateTask: React.FC = () => {
             />
 
             <TextArea label="Descrição" value={description} onChange={e => setDescription(e.target.value)} className="w-full h-20 sm:h-24" />
+
+            <Select
+              label="Status:"
+              value={status}
+              onChange={(e: any) => handleStatusChange(e, setStatus)}
+              options={[
+                { value: 'Pendente', label: 'Pendente' },
+                { value: 'Em andamento', label: 'Em andamento' },
+                { value: 'Atrasado', label: 'Atrasado' },
+              ]}
+            />
+
 
             <div className="w-full flex flex-col sm:flex-row sm:justify-between space-y-4 sm:space-y-0 sm:gap-4">
               <div className="w-full sm:w-1/2">
@@ -133,17 +160,19 @@ const CreateTask: React.FC = () => {
             />
 
             {loading ?
-              <Button onClick={e => handleCreateTask(e)} disabled className="w-1/2 my-4 px-4 font-semibold py-3 bg-red-800 text-white rounded-3xl cursor-not-allowed transition">Criar nova Tarefa</Button>
+              <Button onClick={e => handleEditTask(e)} disabled className="w-1/2 my-4 px-4 font-semibold py-3 bg-yellow-600 text-white rounded-3xl cursor-not-allowed transition">Editar tarefa</Button>
               :
-              <Button onClick={e => handleCreateTask(e)} className="w-1/2 my-4 px-4 font-semibold py-3 bg-red-500 text-white rounded-3xl cursor-pointer hover:bg-red-600 transition">Criar nova Tarefa</Button>
+              <Button onClick={e => handleEditTask(e)} className="w-1/2 my-4 px-4 font-semibold py-3 bg-yellow-500 text-white rounded-3xl cursor-pointer hover:bg-yellow-600 transition">Editar tarefa</Button>
             }
             {error && <ErrorMessage message={error} />}
+
           </form>
+
         </ContentContainer>
-        <SidebarImage src="/createTask/createTaskImg.jpg" alt="Illustration" />
+        <SidebarImage src="/detailsTask/taskImg.jpg" alt="Illustration" />
       </LayoutContainer>
     </PrivateRoute>
   );
-};
+}
 
-export default CreateTask;
+export default EditTask;
