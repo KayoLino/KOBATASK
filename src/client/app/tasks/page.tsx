@@ -9,30 +9,18 @@ import ContentContainer from '@/components/ContentConteiner';
 import SidebarImage from '@/components/SideBarImg';
 import ButtonLink from '@/components/ButtonLink';
 import LoadingSpinner from '@/components/LoadingSpinner';
+import SelectFilter from '@/components/SelectFilter';
 
 import { FiSearch } from "react-icons/fi";
 import { MdFilterList } from "react-icons/md";
 
-import { useState, useEffect } from 'react';
-import axios from "axios";
-import { api } from "@/lib/api";
+import { useState } from 'react';
+import useFetchTasks from '@/hooks/useFetchTasks';
 
 const ListTasks = () => {
 
-  type Task = {
-    id: number;
-    nome: string;
-    categoria: string;
-    descricao: string;
-    status: string;
-    dataInicio: Date;
-    dataFim: Date;
-    prioridade: string;
-  };
+  const { tasks, loading, error } = useFetchTasks();
 
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filters, setFilters] = useState({
     categoria: "",
@@ -41,27 +29,12 @@ const ListTasks = () => {
   });
   const [filterVisible, setFilterVisible] = useState<boolean>(false);
 
-  useEffect(() => {
-    const getListTasks = async () => {
-      try {
-        const response = await axios.get(`${api}/tasks/`, { withCredentials: true });
-        console.log(response.data);
-        if (Array.isArray(response.data.tasks)) {
-          setTasks(response.data.tasks);
-        } else {
-          console.error("A chave 'tasks' não é um array:", response.data.tasks);
-          setError("Erro ao carregar tarefas.");
-        }
-      } catch (error) {
-        console.error("Erro ao buscar tarefas:", error);
-        setError("Erro ao carregar tarefas. Tente novamente mais tarde.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getListTasks();
-  }, []);
+  const handleChange = (key: string, value: string) => {
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      [key]: value
+    }));
+  };
 
   const filteredTasks = tasks.filter(task => {
     const matchesSearchTerm = task.nome.toLowerCase().includes(searchTerm.toLowerCase());
@@ -95,13 +68,13 @@ const ListTasks = () => {
   const getStatusClass = (status: string) => {
     switch (status) {
       case 'Pendente':
-        return 'bg-transparent border border-blue-400 text-blue-400';
+        return 'bg-transparent border border-blue-500 text-blue-500';
       case 'Em andamento':
-        return 'bg-transparent border border-yellow-400 text-yellow-400';
+        return 'bg-transparent border border-yellow-500 text-yellow-500';
       case 'Atrasado':
-        return 'bg-transparent border border-red-400 text-red-400';
+        return 'bg-transparent border border-red-500 text-red-500';
       case 'Concluída':
-        return 'bg-transparent border border-green-400 text-green-400';
+        return 'bg-transparent border border-green-500 text-green-500';
       default:
         return '';
     }
@@ -139,42 +112,26 @@ const ListTasks = () => {
               <h3 className="text-lg font-semibold mb-4">Filtrar Tarefas</h3>
 
               <div className="flex flex-col gap-3">
-                <label className="text-sm">Categoria:</label>
-                <select
+                <SelectFilter
+                  label="Categoria"
                   value={filters.categoria}
-                  onChange={(e) => setFilters({ ...filters, categoria: e.target.value })}
-                  className="border p-2 rounded"
-                >
-                  <option value="">Selecione...</option>
-                  <option value="Trabalho">Trabalho</option>
-                  <option value="Projeto">Projeto</option>
-                  <option value="Pessoal">Pessoal</option>
-                </select>
+                  options={["Trabalho", "Projeto", "Pessoal"]}
+                  onChange={(value) => handleChange('categoria', value)}
+                />
 
-                <label className="text-sm">Status:</label>
-                <select
+                <SelectFilter
+                  label="Status"
                   value={filters.status}
-                  onChange={(e) => setFilters({ ...filters, status: e.target.value })}
-                  className="border p-2 rounded"
-                >
-                  <option value="">Selecione...</option>
-                  <option value="Pendente">Pendente</option>
-                  <option value="Em andamento">Em andamento</option>
-                  <option value="Concluída">Concluída</option>
-                  <option value="Atrasado">Atrasado</option>
-                </select>
+                  options={["Pendente", "Em andamento", "Concluída", "Atrasado"]}
+                  onChange={(value) => handleChange('status', value)}
+                />
 
-                <label className="text-sm">Prioridade:</label>
-                <select
+                <SelectFilter
+                  label="Prioridade"
                   value={filters.prioridade}
-                  onChange={(e) => setFilters({ ...filters, prioridade: e.target.value })}
-                  className="border p-2 rounded"
-                >
-                  <option value="">Selecione...</option>
-                  <option value="Baixa">Baixa</option>
-                  <option value="Média">Média</option>
-                  <option value="Alta">Alta</option>
-                </select>
+                  options={["Baixa", "Média", "Alta"]}
+                  onChange={(value) => handleChange('prioridade', value)}
+                />
               </div>
             </div>
           )}

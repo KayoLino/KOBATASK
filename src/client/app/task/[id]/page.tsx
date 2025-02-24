@@ -19,7 +19,6 @@ import TaskInfo from '@/components/TaskInfo';
 import TaskName from '@/components/TaskName';
 import Button from '@/components/Button';
 import { useGetTask } from '@/hooks/useGetTask';
-import { useEffect } from 'react';
 
 const TaskDetails = () => {
 
@@ -44,7 +43,7 @@ const TaskDetails = () => {
   const handleCompleteTask = async () => {
     try {
       await axios.put(`${api}/tasks/${id}/complete`, {}, { withCredentials: true });
-      refetchTask(); // Atualiza os dados da tarefa
+      refetchTask();
     } catch (error) {
       console.log("Ocorreu um erro: " + error);
     }
@@ -53,7 +52,7 @@ const TaskDetails = () => {
   const handleIncompleteTask = async () => {
     try {
       await axios.put(`${api}/tasks/${id}/incomplete`, {}, { withCredentials: true });
-      refetchTask(); // Atualiza os dados da tarefa
+      refetchTask();
     } catch (error) {
       console.log("Ocorreu um erro: " + error);
     }
