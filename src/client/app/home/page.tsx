@@ -66,7 +66,7 @@ const Home: React.FC = () => {
       <NavBar />
       <LayoutContainer>
         <ContentContainer>
-          <PageTitle title={`Olá ${user?.nome}!`} subtitle={`Você tem ${todayTasks.length} tarefa's para hoje.`} />
+          <PageTitle title={`Olá ${user?.nome}!`} subtitle={`Você tem ${todayTasks.length} tarefa(s) para hoje.`} />
 
           <div className="mt-6 w-full bg-white shadow-md rounded-lg overflow-hidden max-w-4xl mx-auto">
             <ul className="max-h-[340px] md:max-h-[420px] overflow-y-auto px-4 py-2 sm:px-6">
@@ -80,7 +80,7 @@ const Home: React.FC = () => {
 
                     <p className="text-gray-500 2xl:text-lg text-center text-nowrap sm:text-left lg:text-sm">{task.nome}</p>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-3">
                       <Link href={`/home/editTask/${task.id}`} className="text-sm text-yellow-500 font-semibold">
                         Editar
                       </Link>
