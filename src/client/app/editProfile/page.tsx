@@ -16,8 +16,8 @@ import { useRouter } from 'next/navigation';
 import axios from "axios";
 import { api, localhost } from "@/lib/api";
 import { useState, useEffect, useMemo, ChangeEvent } from 'react';
-import { useUser } from '@/hooks/getUser';
-import { updateProfileValidation } from '@/hooks/updateProfileValidation';
+import { useUser } from '@/hooks/useGetUser';
+import { useUpdateProfileValidation } from '@/hooks/useUpdateProfileValidation';
 
 interface Error {
   response?: {
@@ -41,7 +41,7 @@ export default function EditProfile() {
 
   const checkInputs = useMemo(() => {
     if (user) {
-      return updateProfileValidation(user, name, email, newPassword, previewImage);
+      return useUpdateProfileValidation(user, name, email, newPassword, previewImage);
     }
     return false;
   }, [user, name, email, currentPassword, newPassword, previewImage]);

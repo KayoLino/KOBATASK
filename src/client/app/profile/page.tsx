@@ -10,7 +10,7 @@ import ContentContainer from '@/components/ContentConteiner';
 import SidebarImage from '@/components/SideBarImg';
 import ButtonLink from '@/components/ButtonLink';
 
-import { useUser } from '@/hooks/getUser';
+import { useUser } from '@/hooks/useGetUser';
 
 
 export default function Profile() {

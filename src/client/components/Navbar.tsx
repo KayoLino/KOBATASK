@@ -7,7 +7,7 @@ import axios from 'axios';
 import { api, localhost } from '../lib/api';
 import { FiMenu, FiX } from 'react-icons/fi';
 
-import { useUser } from '@/hooks/getUser';
+import { useUser } from '@/hooks/useGetUser';
 
 interface User {
   imagem_perfil?: string;

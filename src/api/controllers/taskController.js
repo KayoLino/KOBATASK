@@ -1,5 +1,6 @@
 const User = require("../model/User");
 const Task = require("../model/Task");
+const { Op } = require("sequelize");
 
 const adjustToUTC3 = (date) => {
   const d = new Date(date);
@@ -143,7 +144,7 @@ const incompleteTask = async (req, res) => {
     console.log(error);
     return res.status(500).json({ error: ["Error interno no servidor."] })
   }
-}
+};
 
 const deleteTask = async (req, res) => {
   try {
@@ -200,6 +201,7 @@ const getTaskById = async (req, res) => {
     return res.status(500).json({ errors: ["Erro interno no servidor."] });
   }
 }
+
 
 module.exports = {
   createTask,

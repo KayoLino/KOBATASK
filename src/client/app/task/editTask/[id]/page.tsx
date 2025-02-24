@@ -20,7 +20,7 @@ import LoadingSpinner from '@/components/LoadingSpinner';
 import ErrorMessage from '@/components/ErrorMessage';
 import ArrowBack from '@/components/ArrowBack';
 
-import { handleCategoryChange, handleDateChange, handlePriorityChange, handleStatusChange } from '@/hooks/handleChange';
+import { handleCategoryChange, handleDateChange, handlePriorityChange, handleStatusChange } from '@/hooks/useHandleChange';
 import { useGetTask } from '@/hooks/useGetTask';
 
 const EditTask = () => {

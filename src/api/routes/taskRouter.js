@@ -9,7 +9,7 @@ const {
   getTasks,
   getTaskById,
   completeTask,
-  incompleteTask
+  incompleteTask,
 } = require("../controllers/taskController");
 
 router.post("/", authGuard, createTask);

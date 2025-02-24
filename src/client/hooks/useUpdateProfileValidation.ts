@@ -2,7 +2,7 @@ import { api } from '@/lib/api';
 import { User } from '@/types/user';
 
 
-export const updateProfileValidation = (
+export const useUpdateProfileValidation = (
   user: User | null,
   name: string,
   email: string,

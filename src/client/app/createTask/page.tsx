@@ -18,7 +18,7 @@ import SidebarImage from '@/components/SideBarImg';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import ErrorMessage from '@/components/ErrorMessage';
 
-import { handleCategoryChange, handleDateChange, handlePriorityChange } from '@/hooks/handleChange';
+import { handleCategoryChange, handleDateChange, handlePriorityChange } from '@/hooks/useHandleChange';
 
 
 
