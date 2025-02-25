@@ -10,7 +10,7 @@ const useRequireAuth = () => {
 
   useEffect(() => {
     if (!loading && user === null) {
-      router.push("/auth/login");
+      router.replace("/auth/login");
     }
   }, [loading, user, router]);
 

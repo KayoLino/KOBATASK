@@ -36,13 +36,14 @@ const useAuth = () => {
         } else {
           setUser(null);
         }
+      } finally {
+        setLoading(false);
       }
 
-      setLoading(false);
     };
 
     checkAuth();
-  }, [router, user]);
+  }, [router]);
 
   return { user, loading };
 };

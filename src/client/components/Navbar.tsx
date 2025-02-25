@@ -64,7 +64,7 @@ const NavBar = () => {
           Adicionar novas Tarefas
         </Link>
         <Link
-          href="#"
+          href="/about"
           className={`hover:text-red-400 ${pathname === "/about" ? "text-red-500 font-bold" : ""}`}
         >
           O que é o KOBATASK?

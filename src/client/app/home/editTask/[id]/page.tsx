@@ -41,10 +41,6 @@ const EditTask = () => {
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
 
-  console.log("Recebendo da API:", task?.dataInicio, task?.dataFim);
-  console.log("Convertido para Date:", new Date(task?.dataInicio), new Date(task?.dataFim));
-
-
   useEffect(() => {
     if (task) {
       setNameTask(task.nome || '');

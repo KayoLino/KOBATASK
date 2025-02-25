@@ -14,7 +14,6 @@ import { useUser } from '@/hooks/useGetUser';
 import useFetchTasks from '@/hooks/useFetchTasks';
 
 import axios from 'axios';
-import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
 
 
@@ -26,8 +25,6 @@ interface User {
 const Home: React.FC = () => {
   const { user, loading: userLoading } = useUser() as { user: User | null; loading: boolean };
   const { tasks, loading: taskLoading, getListTasks } = useFetchTasks();
-
-  const router = useRouter();
 
   const isToday = (dateString: string) => {
     const taskDate = new Date(dateString);
