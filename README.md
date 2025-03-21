@@ -35,6 +35,10 @@ Veja algumas capturas de tela que mostram o funcionamento do projeto.
 ![mobile 1](https://github.com/user-attachments/assets/445c6687-510c-4b3d-b213-1d269f40d320)
 ![mobile 2](https://github.com/user-attachments/assets/04d7432a-2fa9-431f-a8ae-710fced1fd57)
 
+## Figma
+
+https://www.figma.com/design/3PJlUxpGA3qUbQUDL0EYXj/KOBATASK?node-id=0-1&m=dev&t=8QOTCpiwcVCzQIEw-1
+
 
 ## Tecnologias Usadas
 
