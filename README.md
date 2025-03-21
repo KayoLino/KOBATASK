@@ -46,6 +46,3 @@ Veja algumas capturas de tela que mostram o funcionamento do projeto.
 - MySQL
 - Tailwind CSS
 
-## Licença
-
-Este projeto está sob a licença [MIT](LICENSE).
