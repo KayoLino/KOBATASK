@@ -1,51 +1,51 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import axios from 'axios';
-import { api } from '../lib/api';
 import { User } from '@/types/user';
+import { storage } from '@/utils/storage';
+import { userService } from '@/services/user.service';
 
 const useAuth = () => {
-  const [user, setUser] = useState<User | null | undefined>(undefined);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const router = useRouter();
-
   useEffect(() => {
-    const checkAuth = async () => {
+    const initAuth = async () => {
       try {
+        const token = storage.getToken();
 
-        const response = await axios.get(api + '/auth/authCheck', {
-          withCredentials: true,
-        });
-
-        setUser(response.data.user);
-      } catch (error: any) {
-        if (error.response && error.response.status === 401) {
-          try {
-            await axios.post(api + '/auth/refresh-token', {}, { withCredentials: true });
-
-            const response = await axios.get(api + '/auth/authCheck', {
-              withCredentials: true,
-            });
-            setUser(response.data.user);
-          } catch (err) {
-            router.push('/auth/login');
-          }
-        } else {
+        if (!token) {
           setUser(null);
+          setLoading(false);
+          return;
         }
+
+        const storedUser = storage.getUser<User>();
+        if (storedUser) {
+          setUser(storedUser);
+        }
+
+        try {
+          const response = await userService.getProfile();
+          setUser(response.user);
+          storage.setUser(response.user); 
+        } catch (error) {
+          console.error('Erro ao buscar perfil:', error);
+        }
+      } catch (error) {
+        console.error('Erro ao inicializar autenticação:', error);
+        setUser(null);
       } finally {
         setLoading(false);
       }
-
     };
 
-    checkAuth();
-  }, [router]);
+    initAuth();
+  }, []);
 
-  return { user, loading };
+  const isAuthenticated = !!storage.getToken();
+
+  return {user, loading, isAuthenticated};
 };
 
 export default useAuth;

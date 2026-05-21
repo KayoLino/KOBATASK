@@ -1,7 +1,7 @@
 'use client';
 
 import useRequireAuth from '@/hooks/useRequireAuth';
-import LoadingSpinner from '@/components/LoadingSpinner';
+import { LoadingSpinner } from '@/components/ui';
 
 interface PrivateRouteProps {
   children: React.ReactNode;

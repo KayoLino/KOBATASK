@@ -1,10 +1,11 @@
 export interface Task {
   id: number;
-  nome: string;
-  categoria: string;
-  descricao: string;
+  name: string;
+  category: string;
+  description: string;
   status: string;
-  dataInicio: string;
-  dataFim: string;
-  prioridade: string;
+  priority: string;
+  start_date: string;
+  end_date: string;
+  created_at: string;
 }

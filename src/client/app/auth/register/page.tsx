@@ -1,11 +1,19 @@
-'use client'
+'use client';
 
 import { useState, FormEvent } from 'react';
-import Link from 'next/link';
-import axios from 'axios';
-import { api } from '../../../lib/api';
 import { useRouter } from 'next/navigation';
-import ErrorMessage from '@/components/ErrorMessage';
+import { 
+  AuthLayout, 
+  AuthCard, 
+  AuthInput, 
+  AuthButton, 
+  AuthHeader,
+  AuthLink 
+} from '@/components/auth';
+import { ErrorMessage } from '@/components/ui';
+import { authService } from '@/services/auth.service';
+import { handleApiError, logError } from '@/utils/errorHandler';
+import { ROUTES, ERROR_MESSAGES } from '@/helpers/constants';
 
 const RegisterPage: React.FC = () => {
   const [name, setName] = useState<string>('');
@@ -19,112 +27,110 @@ const RegisterPage: React.FC = () => {
 
   const handleRegister = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setErrors('');
+
+    if (!name || !email || !password || !confirmPassword) {
+      setErrors(ERROR_MESSAGES.REQUIRED_FIELDS);
+      return;
+    }
+
+    setIsLoading(true);
 
     try {
-      setIsLoading(true);
+      const response = await authService.register({ 
+        name, 
+        email, 
+        password, 
+        password_confirmation: confirmPassword 
+      });
 
-      if (!name || !email || !password || !confirmPassword) {
-        setErrors('Preencha todos os campos!');
-        return;
-      }
-
-      await axios.post(api + '/auth/register', { email, name, password, confirmPassword });
+      console.log('Registro realizado com sucesso:', response);
 
       setName('');
       setEmail('');
       setPassword('');
       setConfirmPassword('');
-      setErrors('');
 
-      router.push('/auth/login');
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.errors?.[0] || 'Algo deu errado. Tente novamente mais tarde.';
+      router.push(ROUTES.LOGIN);
+    } catch (error) {
+      const errorMessage = handleApiError(error);
       setErrors(errorMessage);
-      console.log(error.response?.data?.errors?.[0]);
+      logError(error, 'Register');
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="bg-[url('/authImg/bgAuth.jpg')] bg-cover bg-no-repeat bg-center flex justify-center items-center min-h-screen p-4">
-      <div className="bg-white w-full md:w-4/5 lg:w-3/5 max-w-[1000px] rounded-2xl flex flex-col md:flex-row shadow-lg overflow-hidden bg-opacity-80">
-        {/* Imagem */}
-        <div className="hidden md:block md:w-2/5">
-          <img
-            src="/authImg/registerImg.jpg"
-            className="w-full h-full object-cover"
-            alt="Register Illustration"
+    <AuthLayout>
+      <AuthCard 
+        imageUrl="/authImg/registerImg.jpg" 
+        imageAlt="Register Illustration"
+        imagePosition="left"
+      >
+        <AuthHeader
+          title="Bem vindo(a) ao KOBATASK"
+          subtitle="Crie sua conta e organize suas tarefas!"
+        />
+
+        <form onSubmit={handleRegister} className="space-y-4">
+          <AuthInput
+            label="Nome"
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            disabled={isLoading}
+            autoComplete="name"
+            required
           />
-        </div>
 
-        {/* Formulário */}
-        <div className="flex flex-col justify-center p-6 sm:p-8 md:p-10 w-full md:w-3/5">
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">
-            Bem vindo(a) ao KOBATASK
-          </h1>
-          <p className="text-gray-600 mb-6">Crie sua conta e organize suas tarefas!</p>
+          <AuthInput
+            label="Email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            disabled={isLoading}
+            autoComplete="email"
+            required
+          />
 
-          <form className="space-y-4" onSubmit={handleRegister}>
-            <div>
-              <label className="block text-gray-800 font-semibold mb-2">Nome</label>
-              <input
-                type="text"
-                className="auth-input w-full p-3 border rounded-2xl bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-gray-400"
-                onChange={e => setName(e.currentTarget.value)}
-                value={name}
-              />
-            </div>
+          <AuthInput
+            label="Senha"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            disabled={isLoading}
+            autoComplete="new-password"
+            required
+          />
 
-            <div>
-              <label className="block text-gray-800 font-semibold mb-2">Email</label>
-              <input
-                type="email"
-                className="auth-input w-full p-3 border rounded-2xl bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-gray-400"
-                onChange={e => setEmail(e.currentTarget.value)}
-                value={email}
-              />
-            </div>
+          <AuthInput
+            label="Confirmar senha"
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            disabled={isLoading}
+            autoComplete="new-password"
+            required
+          />
 
-            <div>
-              <label className="block text-gray-800 font-semibold mb-2">Senha</label>
-              <input
-                type="password"
-                className="auth-input w-full p-3 border rounded-2xl bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-gray-400"
-                onChange={e => setPassword(e.currentTarget.value)}
-                value={password}
-              />
-            </div>
+          <AuthButton 
+            isLoading={isLoading}
+            loadingText="Criando conta..."
+          >
+            Criar conta
+          </AuthButton>
 
-            <div>
-              <label className="block text-gray-800 font-semibold mb-2">Confirmar senha</label>
-              <input
-                type="password"
-                className="auth-input w-full p-3 border rounded-2xl bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-gray-400"
-                onChange={e => setConfirmPassword(e.currentTarget.value)}
-                value={confirmPassword}
-              />
-            </div>
+          {errors && <ErrorMessage message={errors} />}
 
-            <div className="text-sm text-gray-600 mb-4">
-              Já possui uma conta?{' '}
-              <Link href="login" className="text-blue-500 hover:underline">Clique aqui</Link>
-            </div>
-
-            <button
-              type="submit"
-              className="w-full bg-blue-500 text-white p-3 rounded-2xl hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              disabled={isLoading}
-            >
-              Cadastrar-se
-            </button>
-            {errors && (
-              <ErrorMessage message={errors} />
-            )}
-          </form>
-        </div>
-      </div>
-    </div>
+          <AuthLink
+            text="Já possui uma conta?"
+            linkText="Faça login"
+            href={ROUTES.LOGIN}
+          />
+        </form>
+      </AuthCard>
+    </AuthLayout>
   );
 };
 

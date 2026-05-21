@@ -8,17 +8,17 @@ import { useRouter } from 'next/navigation';
 
 import PrivateRoute from '@/components/PrivateRoute';
 import NavBar from '@/components/Navbar';
-import InputField from '@/components/InputField';
-import Button from '@/components/Button';
-import PageTitle from '@/components/PageTitle';
-import Select from '@/components/Select';
-import TextArea from '@/components/TextArea';
-import LayoutContainer from '@/components/LayoutConteiner';
-import ContentContainer from '@/components/ContentConteiner';
-import SidebarImage from '@/components/SideBarImg';
+import InputField from '@/components/common/InputField';
+import Button from '@/components/common/Button';
+import PageTitle from '@/components/layout/PageTitle';
+import Select from '@/components/common/Select';
+import TextArea from '@/components/common/TextArea';
+import LayoutContainer from '@/components/layout/LayoutContainer';
+import ContentContainer from '@/components/layout/ContentContainer';
+import { SidebarImage } from '@/components/layout';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import ErrorMessage from '@/components/ErrorMessage';
-import ArrowBack from '@/components/ArrowBack';
+import ArrowBack from '@/components/layout/ArrowBack';
 
 import { handleCategoryChange, handleDateChange, handlePriorityChange, handleStatusChange } from '@/hooks/useHandleChange';
 import { useGetTask } from '@/hooks/useGetTask';

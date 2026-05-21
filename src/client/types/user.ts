@@ -1,5 +1,5 @@
 export interface User {
-  imagem_perfil?: string;
-  nome: string;
+  name: string;
   email: string;
+  image?: string;
 }

@@ -5,14 +5,14 @@ import { useRouter } from "next/navigation";
 import useAuth from "./useAuth";
 
 const useRequireAuth = () => {
-  const { user, loading } = useAuth();
+  const { user, loading, isAuthenticated } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading && user === null) {
+    if (!loading && !isAuthenticated) {
       router.replace("/auth/login");
     }
-  }, [loading, user, router]);
+  }, [loading, isAuthenticated, router]);
 
   return { user, loading };
 };

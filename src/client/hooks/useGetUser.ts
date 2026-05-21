@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from "axios";
-import { api } from "../lib/api";
+import axiosInstance from "@/lib/axios";
 import { User } from '@/types/user';
 
 export const useUser = () => {
@@ -10,7 +9,7 @@ export const useUser = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axios.get(`${api}/users/profile`, { withCredentials: true });
+        const res = await axiosInstance.get('/api/user/profile');
         setUser(res.data.user);
       } catch (error) {
         console.error("Erro ao buscar usuário:", error);

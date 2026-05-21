@@ -1,13 +1,13 @@
 import Link from "next/link";
-import NavBar from '@/components/Navbar';
+import NavBar from '@/components/layout/Navbar';
 import PrivateRoute from '@/components/PrivateRoute';
-import PageTitle from '@/components/PageTitle';
-import LayoutContainer from '@/components/LayoutConteiner';
-import ContentContainer from '@/components/ContentConteiner';
-import SidebarImage from '@/components/SideBarImg';
-import ButtonLink from '@/components/ButtonLink';
+import PageTitle from '@/components/layout/PageTitle';
+import LayoutContainer from '@/components/layout/LayoutContainer';
+import ContentContainer from '@/components/layout/ContentContainer';
+import { SidebarImage } from '@/components/layout';
+import ButtonLink from '@/components/common/ButtonLink';
 import LoadingSpinner from '@/components/LoadingSpinner';
-import SelectFilter from '@/components/SelectFilter';
+import SelectFilter from '@/components/tasks/SelectFilter';
 
 const About = () => {
   return (

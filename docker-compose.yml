@@ -1,0 +1,57 @@
+services:
+  # Servidor Frontend (Next.js)
+  frontend:
+    build:
+      context: ./src/client
+      dockerfile: Dockerfile
+    container_name: kobatask-front
+    ports:
+     - "3000:3000"
+    volumes: 
+     - ./src/client:/app
+     - /app/node_modules
+    env_file:
+     - ./src/client/.env.local
+    networks:
+     - kobatask-network
+  
+  # Servidor backend (laravel)
+  api:
+    build: 
+      context: ./src/api
+    container_name: kobatask-api
+    volumes:
+      - ./src/api:/var/www
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./src/api/.env
+    depends_on:
+      - db
+    networks:
+      - kobatask-network
+    command: php artisan serve --host=0.0.0.0 --port=8000
+
+  # Banco de Dados
+  db:
+    image: mysql:8.0
+    container_name: kobatask-db
+    restart: always
+    environment: 
+      MYSQL_DATABASE: kobatask_db
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - kobatask-network
+
+networks:
+  kobatask-network:
+      driver: bridge
+
+volumes:
+  db_data:
+    

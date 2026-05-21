@@ -8,16 +8,16 @@ import { useRouter } from 'next/navigation';
 import NavBar from '@/components/Navbar';
 import PrivateRoute from '@/components/PrivateRoute';
 import LoadingSpinner from '@/components/LoadingSpinner';
-import PageTitle from '@/components/PageTitle';
-import LayoutContainer from '@/components/LayoutConteiner';
-import ContentContainer from '@/components/ContentConteiner';
-import SidebarImage from '@/components/SideBarImg';
-import ArrowBack from '@/components/ArrowBack';
-import ButtonLink from '@/components/ButtonLink';
-import TaskDate from '@/components/TaskDate';
-import TaskInfo from '@/components/TaskInfo';
-import TaskName from '@/components/TaskName';
-import Button from '@/components/Button';
+import PageTitle from '@/components/layout/PageTitle';
+import LayoutContainer from '@/components/layout/LayoutContainer';
+import ContentContainer from '@/components/layout/ContentContainer';
+import { SidebarImage } from '@/components/layout';
+import ArrowBack from '@/components/layout/ArrowBack';
+import ButtonLink from '@/components/common/ButtonLink';
+import TaskDate from '@/components/tasks/TaskDate';
+import TaskInfo from '@/components/tasks/TaskInfo';
+import TaskName from '@/components/tasks/TaskName';
+import Button from '@/components/common/Button';
 import { useGetTask } from '@/hooks/useGetTask';
 
 const TaskDetails = () => {
