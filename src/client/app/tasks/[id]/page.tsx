@@ -4,8 +4,8 @@ import { useParams, useRouter } from 'next/navigation';
 import { taskService } from '@/services/task.service';
 import { useGetTask } from '@/hooks/useGetTask';
 import { ROUTES, SUCCESS_MESSAGES, translateTaskKey} from '@/helpers/constants';
+import { toast, Toaster } from 'react-hot-toast';
 
-// Componentes
 import NavBar from '@/components/layout/Navbar';
 import PrivateRoute from '@/components/PrivateRoute';
 import { LoadingSpinner } from '@/components/ui';
@@ -27,12 +27,18 @@ const TaskDetails = () => {
   const { task, loading, refetchTask } = useGetTask(id);
 
   const handleDeleteTask = async () => {
-    if (!confirm("Tem certeza que quer apagar?")) return;
+    const confirmDelete = window.confirm("Tem certeza que quer apagar?");
+    if (!confirmDelete) return;
+
     try {
       await taskService.deleteTask(id);
-      alert(SUCCESS_MESSAGES.TASK_DELETED);
-      router.push(ROUTES.TASKS);
+      toast.success(SUCCESS_MESSAGES.TASK_DELETED || 'Tarefa excluída com sucesso!');
+      
+      setTimeout(() => {
+        router.push(ROUTES.TASKS);
+      }, 800);
     } catch (error) {
+      toast.error('Erro ao deletar a tarefa.');
       console.error("Erro ao deletar:", error);
     }
   };
@@ -40,8 +46,10 @@ const TaskDetails = () => {
   const handleCompleteTask = async () => {
     try {
       await taskService.markAscompleteTask(id);
+      toast.success('Tarefa concluída!');
       refetchTask();
     } catch (error) {
+      toast.error('Erro ao concluir a tarefa.');
       console.error("Erro ao completar:", error);
     }
   };
@@ -49,8 +57,10 @@ const TaskDetails = () => {
   const handleIncompleteTask = async () => {
     try {
       await taskService.markAsIncomplete(id);
+      toast.success('Tarefa reaberta!');
       refetchTask();
     } catch (error) {
+      toast.error('Erro ao reabrir a tarefa.');
       console.error("Erro ao desmarcar:", error);
     }
   };
@@ -66,6 +76,7 @@ const TaskDetails = () => {
 
   return (
     <PrivateRoute>
+      <Toaster position="top-right" />
       <NavBar />
       <LayoutContainer>
         <ContentContainer>
@@ -107,7 +118,6 @@ const TaskDetails = () => {
             </div>
 
             <div className="flex justify-center items-center flex-col">
-              {/* Ajustado para usar a pasta editTask que está dentro de tasks */}
               <ButtonLink 
                 href={`${ROUTES.TASKS}/editTask/${id}`} 
                 label="Editar tarefa" 

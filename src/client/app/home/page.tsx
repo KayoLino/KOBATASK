@@ -8,24 +8,18 @@ import LayoutContainer from '@/components/layout/LayoutContainer';
 import ContentContainer from '@/components/layout/ContentContainer';
 import { SidebarImage } from '@/components/layout';
 import ButtonLink from '@/components/common/ButtonLink';
-import LoadingSpinner from '@/components/ui/LoadingSpinner';
+import { LoadingSpinner } from '@/components/ui'; 
 
 import { useUser } from '@/hooks/useGetUser';
 import useFetchTasks from '@/hooks/useFetchTasks';
-
-import axios from 'axios';
-
-
-interface User {
-  imagem_perfil?: string;
-  nome: string;
-}
+import { ROUTES, translateTaskKey } from "@/helpers/constants"; 
 
 const Home: React.FC = () => {
-  const { user, loading: userLoading } = useUser() as { user: User | null; loading: boolean };
-  const { tasks, loading: taskLoading, getListTasks } = useFetchTasks();
+  const { user, loading: userLoading } = useUser();
+  const { tasks, loading: taskLoading } = useFetchTasks();
 
-  const isToday = (dateString: string) => {
+  const isToday = (dateString?: string) => {
+    if (!dateString) return false;
     const taskDate = new Date(dateString);
     const today = new Date();
     return (
@@ -34,17 +28,6 @@ const Home: React.FC = () => {
       taskDate.getFullYear() === today.getFullYear()
     );
   };
-
-  const handleDeleteTask = async (id: any) => {
-    try {
-      await axios.delete(`${api}/tasks/${id}`, { withCredentials: true });
-      getListTasks();
-
-    } catch (error) {
-      console.log("Ocorreu um erro: " + error);
-    }
-  }
-
 
   if (userLoading || taskLoading) {
     return (
@@ -55,14 +38,14 @@ const Home: React.FC = () => {
     );
   }
 
-  const todayTasks = tasks.filter(task => isToday(task.dataInicio));
+  const todayTasks = tasks.filter(task => isToday(task.start_date) && task.status !== 'Completed');
 
   return (
     <PrivateRoute>
       <NavBar />
       <LayoutContainer>
         <ContentContainer>
-          <PageTitle title={`Olá ${user?.nome}!`} subtitle={`Você tem ${todayTasks.length} tarefa(s) para hoje.`} />
+          <PageTitle title={`Olá ${user?.name || ''}!`} subtitle={`Você tem ${todayTasks.length} tarefa(s) para hoje.`} />
 
           <div className="mt-6 w-full bg-white shadow-md rounded-lg overflow-hidden max-w-4xl mx-auto">
             <ul className="max-h-[340px] md:max-h-[420px] overflow-y-auto px-4 py-2 sm:px-6">
@@ -70,35 +53,29 @@ const Home: React.FC = () => {
                 todayTasks.map((task) => (
                   <li key={task.id} className="flex flex-col sm:flex-row justify-between items-center gap-4 px-4 sm:px-6 py-6 border-b border-gray-200 hover:bg-gray-50 text-center sm:text-left shadow-sm">
                     <div className="flex flex-col items-center sm:items-start">
-                      <p className="text-base font-semibold text-red-600">{task.categoria}</p>
-                      <p className=" text-sm font-medium">{new Date(task.dataInicio).toLocaleTimeString()}</p>
+                      <p className="text-base font-semibold text-red-600">{translateTaskKey(task.category)}</p>
+                      <p className="text-sm font-medium">
+                        {task.start_date ? new Date(task.start_date).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '---'}
+                      </p>
                     </div>
 
-                    <p className="text-gray-500 2xl:text-lg text-center text-nowrap sm:text-left lg:text-sm">{task.nome}</p>
+                    <p className="text-gray-500 2xl:text-lg text-center text-nowrap sm:text-left lg:text-sm">{task.name}</p>
 
                     <div className="flex items-center gap-3">
-                      <Link href={`/home/editTask/${task.id}`} className="text-sm text-yellow-500 font-semibold">
-                        Editar
-                      </Link>
-
-                      <span className="text-sm text-red-500 font-semibold cursor-pointer"
-                        onClick={() => handleDeleteTask(task.id)}
-                      >Deletar</span>
-
-                      <Link href={`/home/task/${task.id}`} className="text-sm text-green-500 font-semibold">
+                      <Link href={`${ROUTES.TASKS}/${task.id}`} className="text-sm text-green-500 font-semibold hover:underline">
                         Exibir
                       </Link>
                     </div>
                   </li>
                 ))
               ) : (
-                <p className="text-center">Você não tem nenhuma tarefa para hoje.</p>
+                <p className="text-center py-10 text-gray-400">Você não tem nenhuma tarefa pendente para hoje.</p>
               )}
             </ul>
           </div>
 
           <div className="mt-8 flex justify-center w-full px-6">
-            <ButtonLink href="/tasks" label="Ver lista de tarefas" className="w-1/2 my-5 px-4 font-semibold py-3 bg-red-500 text-white rounded-3xl hover:bg-red-600 transition text-center" />
+            <ButtonLink href={ROUTES.TASKS} label="Ver lista de tarefas" className="w-1/2 my-5 px-4 font-semibold py-3 bg-red-500 text-white rounded-3xl hover:bg-red-600 transition text-center" />
           </div>
 
         </ContentContainer>

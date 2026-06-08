@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { toast, Toaster } from 'react-hot-toast';
 
-// Componentes
 import PrivateRoute from '@/components/PrivateRoute';
 import NavBar from '@/components/layout/Navbar';
 import InputField from '@/components/common/InputField';
@@ -59,13 +59,18 @@ const CreateTask: React.FC = () => {
 
       await taskService.createTask(taskData);
 
-      alert(SUCCESS_MESSAGES.TASK_CREATED);
-      router.push(ROUTES.TASKS);
+      toast.success(SUCCESS_MESSAGES.TASK_CREATED || 'Tarefa criada com sucesso!');
+      console.log('Task created successfully');
+
+      setTimeout(() => {
+        router.push(ROUTES.TASKS);
+      }, 800);
 
     } catch (err: any) {
       const apiError = err.response?.data?.errors;
       const message = apiError ? Object.values(apiError).flat()[0] : ERROR_MESSAGES.GENERIC;
       
+      toast.error(String(message));
       setError(String(message));
       console.error("Erro na criação:", err);
     } finally {
@@ -84,6 +89,7 @@ const CreateTask: React.FC = () => {
 
   return (
     <PrivateRoute>
+      <Toaster position="top-right" />
       <NavBar />
       <LayoutContainer>
         <ContentContainer>

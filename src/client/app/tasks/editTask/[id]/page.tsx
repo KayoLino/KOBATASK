@@ -6,8 +6,8 @@ import { taskService } from '@/services/task.service';
 import { useGetTask } from '@/hooks/useGetTask';
 import { handleCategoryChange, handleDateChange, handlePriorityChange, handleStatusChange } from '@/hooks/useHandleChange';
 import { ROUTES, SUCCESS_MESSAGES, ERROR_MESSAGES } from '@/helpers/constants';
+import { toast, Toaster } from 'react-hot-toast';
 
-// Layout e UI
 import PrivateRoute from '@/components/PrivateRoute';
 import NavBar from '@/components/layout/Navbar';
 import InputField from '@/components/common/InputField';
@@ -31,6 +31,10 @@ const EditTask = () => {
   const [category, setCategory] = useState<string | undefined>('Work');
   const [description, setDescription] = useState<string>('');
   const [status, setStatus] = useState<string | undefined>('Pending');
+  
+  const [rawInitDate, setRawInitDate] = useState<string>('');
+  const [rawFinishDate, setRawFinishDate] = useState<string>('');
+
   const [initDate, setInitDate] = useState<Date | undefined>(undefined);
   const [finishDate, setFinishDate] = useState<Date | undefined>(undefined);
   const [priority, setPriority] = useState<string | undefined>('Medium');
@@ -38,8 +42,10 @@ const EditTask = () => {
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
 
-  const formatForInput = (date?: Date) => {
-    if (!date || isNaN(date.getTime())) return "";
+  const formatISOToInput = (isoString?: string) => {
+    if (!isoString) return "";
+    const date = new Date(isoString);
+    if (isNaN(date.getTime())) return "";
     const offset = date.getTimezoneOffset() * 60000;
     return new Date(date.getTime() - offset).toISOString().slice(0, 16);
   };
@@ -50,9 +56,13 @@ const EditTask = () => {
       setCategory(task.category || 'Work');
       setDescription(task.description || '');
       setStatus(task.status || 'Pending');
-      setInitDate(task.start_date ? new Date(task.start_date) : undefined);
-      setFinishDate(task.end_date ? new Date(task.end_date) : undefined);
       setPriority(task.priority || 'Medium');
+      
+      setRawInitDate(task.start_date || '');
+      setRawFinishDate(task.end_date || '');
+      
+      setInitDate(undefined);
+      setFinishDate(undefined);
     }
   }, [task]);
 
@@ -67,19 +77,25 @@ const EditTask = () => {
       description: description,
       status: status ?? 'Pending',
       priority: priority ?? 'Medium',
-      start_date: initDate ? initDate.toISOString() : '',
-      end_date: finishDate ? finishDate.toISOString() : ''
+      start_date: initDate ? initDate.toISOString() : rawInitDate,
+      end_date: finishDate ? finishDate.toISOString() : rawFinishDate
     };
 
     try {
       await taskService.updateTask(Number(id), payload);
-      alert(SUCCESS_MESSAGES.TASK_UPDATED);
-      router.push(`${ROUTES.TASKS}/${id}`);
+      
+      toast.success(SUCCESS_MESSAGES.TASK_UPDATED || 'Tarefa atualizada com sucesso!');
+      console.log('Tarefa updated successfully with payload:', payload);
+      
+      setTimeout(() => {
+        router.push(`${ROUTES.TASKS}/${id}`);
+      }, 800);
+
     } catch (err: any) {
       const apiError = err.response?.data?.errors;
       const message = apiError ? Object.values(apiError).flat()[0] : ERROR_MESSAGES.GENERIC;
+      toast.error(String(message));
       setError(String(message));
-      console.error("Erro na edição:", err);
     } finally {
       setLoading(false);
     }
@@ -89,6 +105,7 @@ const EditTask = () => {
 
   return (
     <PrivateRoute>
+      <Toaster position="top-right" />
       <NavBar />
       <LayoutContainer>
         <ContentContainer>
@@ -128,7 +145,7 @@ const EditTask = () => {
                 <InputField
                   label="Data de início"
                   type="datetime-local"
-                  value={formatForInput(initDate)}
+                  value={initDate ? initDate.toISOString().slice(0, 16) : formatISOToInput(rawInitDate)}
                   onChange={(e: any) => handleDateChange(e, setInitDate)}
                   className="w-full"
                 />
@@ -137,7 +154,7 @@ const EditTask = () => {
                 <InputField
                   label="Data de fim"
                   type="datetime-local"
-                  value={formatForInput(finishDate)}
+                  value={finishDate ? finishDate.toISOString().slice(0, 16) : formatISOToInput(rawFinishDate)}
                   onChange={(e: any) => handleDateChange(e, setFinishDate)}
                   className="w-full"
                 />
